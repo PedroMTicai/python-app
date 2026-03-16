@@ -5,292 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conversor de Divisas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg:        #0a0a0f;
-            --surface:   #111118;
-            --surface2:  #1a1a24;
-            --border:    #2a2a38;
-            --accent:    #7c6aff;
-            --accent2:   #c084fc;
-            --success:   #34d399;
-            --text:      #e2e0f0;
-            --muted:     #6b6882;
-            --glow:      rgba(124,106,255,0.18);
+        :root{
+            --bg1: #0f172a;
+            --bg2: #0b486b;
+            --card-bg: rgba(255,255,255,0.97);
+            --accent: #0d6efd;
         }
-
-        *, *::before, *::after { box-sizing: border-box; }
-
-        html, body { height: 100%; margin: 0; }
-
+        html,body{height:100%;}
         body {
-            background: var(--bg);
-            font-family: 'DM Sans', sans-serif;
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            color: #0f172a;
+            padding-top: 72px;
         }
-
-        /* ── Background grid ── */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(124,106,255,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(124,106,255,0.04) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ── Glow orbs ── */
-        body::after {
-            content: '';
-            position: fixed;
-            top: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 700px;
-            height: 400px;
-            background: radial-gradient(ellipse, rgba(124,106,255,0.12) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ── Navbar ── */
-        .navbar {
-            background: rgba(10,10,15,0.85) !important;
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            padding: 14px 0;
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-        }
-
-        .navbar-brand {
-            font-family: 'Space Mono', monospace;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text) !important;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: 0.05em;
-        }
-
-        .brand-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%       { opacity: 0.6; transform: scale(0.85); }
-        }
-
-        .nav-link {
-            color: var(--muted) !important;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-link:hover, .nav-link.active { color: var(--text) !important; }
-
-        /* ── Page layout ── */
-        .page-wrap {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 90px 16px 40px;
-        }
-
-        /* ── Card ── */
+        .navbar-brand{display:flex;align-items:center;gap:10px;font-weight:600}
+        .brand-logo{width:40px;height:40px}
         .converter-card {
-            width: 100%;
-            max-width: 440px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 36px 32px;
-            box-shadow: 0 0 0 1px rgba(124,106,255,0.08),
-                        0 20px 60px rgba(0,0,0,0.6);
-            animation: fadeUp 0.5s ease both;
+            border-radius: 14px;
+            backdrop-filter: blur(6px);
+            background: var(--card-bg);
+            box-shadow: 0 10px 30px rgba(2,6,23,0.45);
         }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── Header ── */
-        .card-header-area {
-            margin-bottom: 28px;
-        }
-
-        .card-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 6px;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text);
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        /* ── Form elements ── */
-        .form-label {
-            font-size: 0.78rem;
-            font-weight: 500;
-            color: var(--muted);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .form-control, .form-select {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-control:focus, .form-select:focus {
-            background: var(--surface2);
-            color: var(--text);
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(124,106,255,0.15);
-            outline: none;
-        }
-
-        .form-control::placeholder { color: var(--muted); }
-
-        .form-select option {
-            background: var(--surface2);
-            color: var(--text);
-        }
-
-        /* ── Arrow divider ── */
-        .arrow-col {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .arrow-badge {
-            width: 34px; height: 34px;
-            border-radius: 50%;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 0.9rem;
-        }
-
-        /* ── Button ── */
-        .btn-convert {
-            width: 100%;
-            padding: 13px;
-            border-radius: 10px;
-            border: none;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: #fff;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: opacity 0.2s, transform 0.15s;
-            letter-spacing: 0.02em;
-        }
-
-        .btn-convert::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: white;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .btn-convert:hover { transform: translateY(-1px); opacity: 0.92; }
-        .btn-convert:active { transform: translateY(0); }
-
-        /* ── Result ── */
         .result-box {
-            margin-top: 20px;
-            background: rgba(52,211,153,0.07);
-            border: 1px solid rgba(52,211,153,0.2);
-            border-radius: 12px;
-            padding: 16px 20px;
-            text-align: center;
-            animation: fadeUp 0.35s ease both;
-        }
-
-        .result-label {
-            font-size: 0.7rem;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--success);
-            font-family: 'Space Mono', monospace;
-            margin-bottom: 4px;
-        }
-
-        .result-value {
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            color: var(--success);
-            font-family: 'Space Mono', monospace;
-        }
-
-        /* ── Divider ── */
-        .form-divider {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 24px 0;
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 480px) {
-            .converter-card { padding: 28px 20px; }
-            .card-title { font-size: 1.3rem; }
+            color: #198754;
         }
     </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <span class="brand-dot"></span>
-                CONVERSOR
+                <img src="/static/logo.svg" alt="Logo" class="brand-logo">
+                Conversor
             </a>
-            <button class="navbar-toggler border-0" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#navMain"
-                    style="color: var(--muted);">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navMain">
@@ -301,37 +55,31 @@
         </div>
     </nav>
 
-    <div class="page-wrap">
-        <div class="converter-card">
-
-            <div class="card-header-area">
-                <p class="card-label">Tipo de cambio en tiempo real</p>
-                <h2 class="card-title">Conversor de divisas</h2>
+    <div class="d-flex justify-content-center align-items-start vh-100">
+        <div class="card shadow-lg p-4 converter-card converter-wrap mt-4">
+            <div class="text-center mb-3">
+                <h2>💱 Conversor de Divisas</h2>
+                <p class="text-muted small">Un diseño moderno</p>
             </div>
 
             <form method="post">
-
                 <div class="mb-3">
                     <label class="form-label">Cantidad</label>
-                    <input type="number" step="0.01" name="amount"
-                           class="form-control"
-                           placeholder="0.00" required>
+                    <input type="number" step="0.01" name="amount" 
+                           class="form-control form-control-lg" 
+                           placeholder="Introduce cantidad" required>
                 </div>
 
-                <div class="row g-2 mb-4 align-items-end">
-                    <div class="col-5">
-                        <label class="form-label">Desde</label>
+                <div class="row g-2 mb-3 align-items-center">
+                    <div class="col-5 col-md-5">
                         <select name="from_currency" class="form-select">
                             <option value="EUR">EUR €</option>
                             <option value="USD">USD $</option>
                             <option value="GBP">GBP £</option>
                         </select>
                     </div>
-                    <div class="col-2 arrow-col pb-1">
-                        <div class="arrow-badge">→</div>
-                    </div>
-                    <div class="col-5">
-                        <label class="form-label">Hacia</label>
+                    <div class="col-2 text-center text-muted">→</div>
+                    <div class="col-5 col-md-5">
                         <select name="to_currency" class="form-select">
                             <option value="USD">USD $</option>
                             <option value="EUR">EUR €</option>
@@ -340,19 +88,18 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-convert">
-                    Convertir
-                </button>
-
+                <div class="d-grid mb-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Convertir
+                    </button>
+                </div>
             </form>
 
             {% if result is not none %}
-                <div class="result-box">
-                    <p class="result-label">Resultado</p>
-                    <div class="result-value">{{ result }}</div>
+                <div class="mt-3 text-center result-box">
+                    {{ result }}
                 </div>
             {% endif %}
-
         </div>
     </div>
 
